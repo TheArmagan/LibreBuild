@@ -1,0 +1,10 @@
+name: LibreBuild
+version: '1.0-SNAPSHOT'
+main: net.ezplace.librebuild.LibreBuild
+api-version: '1.20'
+softdepend: [WorldEdit, WorldGuard]
+author: andrewYerNau
+commands:
+  librebuild:
+    aliases: [lb]
+    description: "Comandos para manejar esquemáticas en WorldEdit"
