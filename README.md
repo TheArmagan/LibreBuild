@@ -1,6 +1,6 @@
 # ️ LibreBuild 
 
-![LibreBuild Banner](https://your-image-url.com/banner.png)
+![LibreBuild Banner](https://cdn.modrinth.com/data/cached_images/8cf304d737a45735d436d78957a16fc0afe07699.png)
 
 **LibreBuild** is a Minecraft plugin that allows **players and administrators** to place schematic files (`.schem`) easily, making building more accessible for everyone. Whether you're an admin managing world structures or a player wanting a pre-built house, LibreBuild has you covered!
 
@@ -13,7 +13,7 @@
 
 ## 📥 Installation
 
-1. **Download the plugin** from the [Releases](https://github.com/your-repo/releases) section.  
+1. **Download the plugin** from the [Releases](https://github.com/andrewyernau/LibreBuild/releases) section or in .  
 2. Place `LibreBuild.jar` into your server’s `plugins/` folder.
 3. Don't forget to install **WorldEdit** and **WorldGuard**. (Minimum version: 7.3.9 and 7.0.9 tested)
 4. Restart your server.  
