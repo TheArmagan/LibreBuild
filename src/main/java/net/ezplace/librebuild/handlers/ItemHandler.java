@@ -1,5 +1,6 @@
 package net.ezplace.librebuild.handlers;
 
+import net.ezplace.librebuild.utils.LibreBuildSettings;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -15,14 +16,14 @@ public class ItemHandler {
     }
 
     public ItemStack createSchematicItem(String schematicName) {
-        ItemStack item = new ItemStack(Material.PAPER);
+        ItemStack item = new ItemStack(LibreBuildSettings.ITEM_MATERIAL);
         ItemMeta meta = item.getItemMeta();
 
         if (meta == null) {
             return item;
         }
 
-        meta.setDisplayName("§aBuild: " + schematicName);
+        meta.setDisplayName(LibreBuildSettings.ITEM_PREFIX + schematicName);
         meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, schematicName);
         item.setItemMeta(meta);
 

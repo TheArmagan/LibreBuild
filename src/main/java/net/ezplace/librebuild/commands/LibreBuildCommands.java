@@ -4,6 +4,9 @@ import com.sk89q.worldedit.math.BlockVector3;
 import net.ezplace.librebuild.handlers.ItemHandler;
 import net.ezplace.librebuild.schem.SchemReader;
 import net.ezplace.librebuild.schem.SchemWriter;
+import net.ezplace.librebuild.utils.LibreBuildMessages;
+import net.ezplace.librebuild.utils.LibreBuildSettings;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,67 +31,114 @@ public class LibreBuildCommands implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("librebuild.command.admin")) {
+            sender.sendMessage("§f-----------§6Libre§0Build§f-----------");
+            sender.sendMessage("§8Made by §4AndrewYerNau");
+            sender.sendMessage("§8Version 1.0.0");
+            return true;
+        }
+
         if (args.length == 0) {
-            sender.sendMessage("§aUsa /lb help para ver los comandos disponibles.");
-            return true;
+            return false;
         }
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("§cEste comando solo puede ser usado por jugadores.");
-            return true;
-        }
-
-        Player player = (Player) sender;
         String subCommand = args[0].toLowerCase();
 
         switch (subCommand) {
             case "help":
-                sendHelpMessage(player);
+                sendHelpMessage(sender);
                 return true;
+
             case "create":
-                if (args.length != 8) {
-                    player.sendMessage("§cUso correcto: /lb create <x1 y1 z1> <x2 y2 z2> <nombre>");
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(LibreBuildMessages.getInstance().getMessage("command.console.error"));
                     return true;
                 }
-                player.sendMessage("§eCreando esquemática...");
+                Player player = (Player) sender;
+                if (args.length != 8) {
+                    player.sendMessage(LibreBuildMessages.getInstance().getMessage("command.create.usage"));
+                    return true;
+                }
+                player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.create"));
                 handleCreateCommand(player, args);
                 return true;
+
             case "load":
                 if (args.length != 2) {
-                    player.sendMessage("§cUso correcto: /lb load <nombre>");
+                    sender.sendMessage(LibreBuildMessages.getInstance().getMessage("command.load.usage"));
                     return true;
                 }
-                player.sendMessage("§eCargando esquemática " + args[1] + "...");
-                handleLoadCommand(player, args[1]);
+                if (sender instanceof Player) {
+                    player = (Player) sender;
+                    player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.load") + args[1] + "...");
+                    handleLoadCommand(player, args[1]);
+                } else {
+                    sender.sendMessage(LibreBuildMessages.getInstance().getMessage("command.console.error"));
+                }
                 return true;
+
             case "item":
                 if (args.length == 3 && args[1].equalsIgnoreCase("get")) {
-                    player.sendMessage("§eDando item con esquemática " + args[2] + "...");
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage(LibreBuildMessages.getInstance().getMessage("command.console.error.item"));
+                        return true;
+                    }
+                    player = (Player) sender;
                     handleItemGetCommand(player, args[2]);
                     return true;
                 }
-                player.sendMessage("§cUso correcto: /lb item get <nombre>");
+
+                if (args.length == 4 && args[1].equalsIgnoreCase("player")) {
+                    Player target = Bukkit.getPlayer(args[2]);
+                    if (target == null) {
+                        sender.sendMessage(LibreBuildMessages.getInstance().getMessage("command.item.notonline"));
+                        return true;
+                    }
+                    handleItemGetCommand(target, args[3]);
+                    return true;
+                }
+
+                sender.sendMessage(LibreBuildMessages.getInstance().getMessage("command.give.usage"));
+                sender.sendMessage(LibreBuildMessages.getInstance().getMessage("command.give.usage1"));
+                sender.sendMessage(LibreBuildMessages.getInstance().getMessage("command.give.usage2"));
                 return true;
+
+            case "reload":
+                LibreBuildSettings.getInstance().load();
+                sender.sendMessage(LibreBuildMessages.getInstance().getMessage("plugin.reload"));
+                return true;
+
             default:
-                player.sendMessage("§cComando no reconocido. Usa /lb help.");
+                sender.sendMessage(LibreBuildMessages.getInstance().getMessage("command.notfound"));
                 return true;
         }
     }
+
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
 
-        if (args.length == 1) {
-            completions.addAll(Arrays.asList("help", "create", "load", "item"));
-        } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("load") || (args[0].equalsIgnoreCase("item") && args[1].equalsIgnoreCase("get"))) {
-                completions.addAll(getSchematicNames());
-            } else if (args[0].equalsIgnoreCase("item")) {
-                completions.add("get");
-            }
+        if (!sender.hasPermission("")) {
+            completions.add("");
+            return completions;
         }
 
+        if (args.length == 1) {
+            completions.addAll(Arrays.asList("help", "reload", "create", "load", "item"));
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("load")) {
+                completions.addAll(getSchematicNames());
+            } else if (args[0].equalsIgnoreCase("item")) {
+                completions.addAll(Arrays.asList("get", "player"));
+            }
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("item") && args[1].equalsIgnoreCase("player")) {
+            completions.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).toList());
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("item") && args[1].equalsIgnoreCase("get")) {
+            completions.addAll(getSchematicNames());
+        } else if (args.length == 4 && args[0].equalsIgnoreCase("item") && args[1].equalsIgnoreCase("player")) {
+            completions.addAll(getSchematicNames());
+        }
         return completions;
     }
 
@@ -105,12 +155,13 @@ public class LibreBuildCommands implements CommandExecutor, TabCompleter {
         return schemList;
     }
 
-    private void sendHelpMessage(Player player) {
-        player.sendMessage("§a--- Comandos de LibreBuild ---");
-        player.sendMessage("§e/lb help §7- Muestra esta ayuda.");
-        player.sendMessage("§e/lb create <x1 y1 z1> <x2 y2 z2> <nombre> §7- Guarda una estructura.");
-        player.sendMessage("§e/lb load <nombre> §7- Carga una estructura y la pega.");
-        player.sendMessage("§e/lb item get <nombre> §7- Obtiene un ítem con el schematic.");
+    private void sendHelpMessage(CommandSender player) {
+        player.sendMessage(LibreBuildMessages.getInstance().getMessage("command.help.title"));
+        player.sendMessage(LibreBuildMessages.getInstance().getMessage("command.help.help"));
+        player.sendMessage(LibreBuildMessages.getInstance().getMessage("command.help.create"));
+        player.sendMessage(LibreBuildMessages.getInstance().getMessage("command.help.load"));
+        player.sendMessage(LibreBuildMessages.getInstance().getMessage("command.help.itemget"));
+        player.sendMessage(LibreBuildMessages.getInstance().getMessage("command.help.itemplayer"));
     }
 
     private void handleCreateCommand(Player player, String[] args) {
@@ -120,33 +171,33 @@ public class LibreBuildCommands implements CommandExecutor, TabCompleter {
             String name = args[7];
 
             if (SchemWriter.saveSchematic(player, min, max, name)) {
-                player.sendMessage("§aEsquemática '" + name + "' guardada correctamente.");
+                player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.success.save"));
             } else {
-                player.sendMessage("§cError al guardar la esquemática.");
+                player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.save"));
             }
         } catch (NumberFormatException e) {
-            player.sendMessage("§cLas coordenadas deben ser números enteros.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.coords"));
         }
     }
 
     private void handleLoadCommand(Player player, String name) {
         File file = new File(schematicsFolder, name + ".schem");
         if (!file.exists()) {
-            player.sendMessage("§cNo se encontró la esquemática '" + name + "'.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("command.item.notfound") + name + ".");
         } else {
             SchemReader.pasteSchematic(player, file);
-            player.sendMessage("§aEsquemática '" + name + "' cargada correctamente.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.placed"));
         }
     }
 
     private void handleItemGetCommand(Player player, String name) {
         File file = new File(schematicsFolder, name + ".schem");
         if (!file.exists()) {
-            player.sendMessage("§cNo se encontró la esquemática '" + name + "'.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("command.item.notfound") + name + ".");
         } else {
             ItemStack schematicItem = itemHandler.createSchematicItem(name);
             player.getInventory().addItem(schematicItem);
-            player.sendMessage("§aRecibiste el ítem de la esquemática '" + name + "'.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("command.item.get"));
         }
     }
 }

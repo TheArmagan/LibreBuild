@@ -4,7 +4,6 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
@@ -13,6 +12,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.ezplace.librebuild.utils.FileSchem;
+import net.ezplace.librebuild.utils.LibreBuildMessages;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -31,7 +31,7 @@ public class SchemWriter {
                     world, region, clipboard, region.getMinimumPoint()
             ));
         } catch (Exception e) {
-            player.sendMessage("§cError al copiar la región.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.copy"));
             e.printStackTrace();
             return false;
         }
@@ -39,12 +39,12 @@ public class SchemWriter {
         File file = new File(FileSchem.schematicsFolder, fileName + ".schem");
         file.getParentFile().mkdirs();
 
-        try (ClipboardWriter writer = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getWriter(new FileOutputStream(file))) {
+        try (ClipboardWriter writer = BuiltInClipboardFormat.SPONGE_V3_SCHEMATIC.getWriter(new FileOutputStream(file))) {
             writer.write(clipboard);
-            player.sendMessage("§aEsquemática guardada como " + file.getName());
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.saveas"));
             return true;
         } catch (IOException e) {
-            player.sendMessage("§cError al guardar la esquemática.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.save"));
             e.printStackTrace();
             return false;
         }

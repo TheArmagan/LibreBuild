@@ -12,6 +12,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.math.BlockVector3;
+import net.ezplace.librebuild.utils.LibreBuildMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -27,14 +28,14 @@ public class SchemReader {
         ClipboardFormat format = ClipboardFormats.findByFile(file);
 
         if (format == null) {
-            Bukkit.getLogger().severe("¡Formato de schematic no reconocido para el archivo: " + file.getAbsolutePath());
+            Bukkit.getLogger().severe(LibreBuildMessages.getInstance().getMessage("schem.error.format") + file.getAbsolutePath());
             return null;
         }
 
         try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
             clipboard = reader.read();
         } catch (IOException e) {
-            Bukkit.getLogger().severe("Error al leer el archivo schematic: " + e.getMessage());
+            Bukkit.getLogger().severe(LibreBuildMessages.getInstance().getMessage("schem.error.read")  + e.getMessage());
         }
 
         return clipboard;
@@ -43,7 +44,7 @@ public class SchemReader {
     public static void pasteSchematic(Player player, File file, Location loc) {
         Clipboard clipboard = loadSchematic(file);
         if (clipboard == null) {
-            player.sendMessage("§cError al cargar la esquemática.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.load") );
             return;
         }
 
@@ -55,9 +56,9 @@ public class SchemReader {
                     .build();
 
             Operations.complete(operation);
-            player.sendMessage("§aSchematic colocada correctamente en " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.success.paste") + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         } catch (Exception e) {
-            player.sendMessage("§cError al colocar la schematic.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.paste") );
             e.printStackTrace();
         }
     }
@@ -66,7 +67,7 @@ public class SchemReader {
         Location loc = player.getLocation();
         Clipboard clipboard = loadSchematic(file);
         if (clipboard == null) {
-            player.sendMessage("§cError al cargar la esquemática.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.load") );
             return;
         }
 
@@ -78,9 +79,9 @@ public class SchemReader {
                     .build();
 
             Operations.complete(operation);
-            player.sendMessage("§aSchematic colocada correctamente en " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.success.paste")  + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         } catch (Exception e) {
-            player.sendMessage("§cError al colocar la schematic.");
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.paste") );
             e.printStackTrace();
         }
     }

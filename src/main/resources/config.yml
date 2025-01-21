@@ -1,0 +1,21 @@
+# █████        ███  █████                        ███████████              ███  ████      █████
+#░░███        ░░░  ░░███                        ░░███░░░░░███            ░░░  ░░███     ░░███
+# ░███        ████  ░███████  ████████   ██████  ░███    ░███ █████ ████ ████  ░███   ███████
+# ░███       ░░███  ░███░░███░░███░░███ ███░░███ ░██████████ ░░███ ░███ ░░███  ░███  ███░░███
+# ░███        ░███  ░███ ░███ ░███ ░░░ ░███████  ░███░░░░░███ ░███ ░███  ░███  ░███ ░███ ░███
+# ░███      █ ░███  ░███ ░███ ░███     ░███░░░   ░███    ░███ ░███ ░███  ░███  ░███ ░███ ░███
+# ███████████ █████ ████████  █████    ░░██████  ███████████  ░░████████ █████ █████░░████████
+#░░░░░░░░░░░ ░░░░░ ░░░░░░░░  ░░░░░      ░░░░░░  ░░░░░░░░░░░    ░░░░░░░░ ░░░░░ ░░░░░  ░░░░░░░░
+
+#Set messages language to (en = english, es = spanish, de = dutch, fr = french, ru = russian) <== SUPPORTED LANGUAGES
+Lang:  en
+
+#See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html for a list of materials
+Item:
+  Material:  "PAPER"
+  Prefix:  "§aBlueprint: "
+#See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Particle.html for a list of particles
+Particles:
+  Enabled: true
+  Type:  "REDSTONE"
+  Color:  "#FF5733" #HEX color
