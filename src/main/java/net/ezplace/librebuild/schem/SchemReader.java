@@ -13,6 +13,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.ezplace.librebuild.utils.LibreBuildMessages;
+import net.ezplace.librebuild.utils.LibreBuildSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -52,7 +53,7 @@ public class SchemReader {
             Operation operation = new ClipboardHolder(clipboard)
                     .createPaste(editSession)
                     .to(BlockVector3.at(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()))
-                    .ignoreAirBlocks(true)
+                    .ignoreAirBlocks(LibreBuildSettings.REPLACE_AIR)
                     .build();
 
             Operations.complete(operation);

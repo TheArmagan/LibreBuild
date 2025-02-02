@@ -19,3 +19,5 @@ Particles:
   Enabled: true
   Type:  "REDSTONE"
   Color:  "#FF5733" #HEX color
+
+ReplaceAir: false

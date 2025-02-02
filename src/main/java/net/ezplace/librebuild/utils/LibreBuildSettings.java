@@ -21,6 +21,7 @@ public class LibreBuildSettings {
     public static boolean PARTICLES;
     public static org.bukkit.Color PARTICLES_COLOR;
     public static Particle PARTICLES_TYPE;
+    public static boolean REPLACE_AIR;
 
     private LibreBuildSettings(){
 
@@ -53,6 +54,7 @@ public class LibreBuildSettings {
 
         PARTICLES = config.getBoolean("Particles.Enabled");
         PARTICLES_TYPE = Particle.valueOf(config.getString("Particles.Type"));
+        REPLACE_AIR = config.getBoolean("ReplaceAir");
         try {
             String hexColor = config.getString("Particles.Color", "#FFFFFF");
             java.awt.Color tempColor = java.awt.Color.decode(hexColor);
