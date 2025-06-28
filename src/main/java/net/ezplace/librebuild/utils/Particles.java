@@ -11,6 +11,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * TODO: Particles do not match with the schematic placement. Need to solve this.
+ */
 public class Particles {
     private final Plugin plugin;
     private final Map<Player, BukkitRunnable> activeParticles = new HashMap<>();

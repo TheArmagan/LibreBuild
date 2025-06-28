@@ -1,6 +1,5 @@
 package net.ezplace.librebuild;
 
-import com.sk89q.worldguard.config.ConfigurationManager;
 import net.ezplace.librebuild.commands.LibreBuildCommands;
 import net.ezplace.librebuild.handlers.GuardHandler;
 import net.ezplace.librebuild.handlers.ItemHandler;
@@ -41,7 +40,7 @@ public class LibreBuild extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new StructurePlacementListener(this, guardHandler), this);
 
-        LibreBuildCommands commandExecutor = new LibreBuildCommands(FileSchem.schematicsFolder, itemHandler);
+        LibreBuildCommands commandExecutor = new LibreBuildCommands(FileSchem.SCHEMATIC_FOLDER, itemHandler);
         getCommand("librebuild").setExecutor(commandExecutor);
         getCommand("librebuild").setTabCompleter(commandExecutor);
         getLogger().info(LibreBuildMessages.getInstance().getMessage("plugin.enabled"));

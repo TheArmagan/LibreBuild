@@ -10,7 +10,6 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.ezplace.librebuild.utils.LibreBuildMessages;
 import net.ezplace.librebuild.utils.LibreBuildSettings;

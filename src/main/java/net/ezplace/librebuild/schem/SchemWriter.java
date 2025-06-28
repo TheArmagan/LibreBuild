@@ -36,7 +36,7 @@ public class SchemWriter {
             return false;
         }
 
-        File file = new File(FileSchem.schematicsFolder, fileName + ".schem");
+        File file = new File(FileSchem.SCHEMATIC_FOLDER, fileName + ".schem");
         file.getParentFile().mkdirs();
 
         try (ClipboardWriter writer = BuiltInClipboardFormat.SPONGE_V3_SCHEMATIC.getWriter(new FileOutputStream(file))) {

@@ -7,7 +7,7 @@
 # ███████████ █████ ████████  █████    ░░██████  ███████████  ░░████████ █████ █████░░████████
 #░░░░░░░░░░░ ░░░░░ ░░░░░░░░  ░░░░░      ░░░░░░  ░░░░░░░░░░░    ░░░░░░░░ ░░░░░ ░░░░░  ░░░░░░░░
 
-#Set messages language to (en = english, es = spanish, de = dutch, fr = french, ru = russian) <== SUPPORTED LANGUAGES
+#Set messages language to (en = english, es = spanish, de = deutch, fr = french, ru = russian) <== SUPPORTED LANGUAGES
 Lang:  en
 
 #See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html for a list of materials

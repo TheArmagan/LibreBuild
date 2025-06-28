@@ -1,18 +1,16 @@
 package net.ezplace.librebuild.listeners;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.world.World;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.ezplace.librebuild.LibreBuild;
 import net.ezplace.librebuild.handlers.GuardHandler;
 import net.ezplace.librebuild.handlers.ItemHandler;
 import net.ezplace.librebuild.schem.SchemReader;
@@ -58,7 +56,7 @@ public class StructurePlacementListener implements Listener {
 
         Location loc = player.getLocation();
 
-        File schematicFile = new File(FileSchem.schematicsFolder,  schematicName + ".schem");
+        File schematicFile = new File(FileSchem.SCHEMATIC_FOLDER,  schematicName + ".schem");
 
         try {
             ClipboardFormat format = ClipboardFormats.findByFile(schematicFile);
@@ -116,7 +114,7 @@ public class StructurePlacementListener implements Listener {
     }
 
     private void placeSchematic(Player player, Location loc, String schematicName, int width, int height, int depth) {
-        File file = new File(FileSchem.schematicsFolder + "/" + schematicName + ".schem");
+        File file = new File(FileSchem.SCHEMATIC_FOLDER + "/" + schematicName + ".schem");
         player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.placing"));
         SchemReader.pasteSchematic(player, file, loc);
     }
