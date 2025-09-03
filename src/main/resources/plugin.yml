@@ -1,9 +1,9 @@
 name: LibreBuild
-version: '1.1.0'
+version: '1.1.1'
 main: net.ezplace.librebuild.LibreBuild
 api-version: '1.20'
 softdepend: [WorldEdit, WorldGuard]
-author: andrewYerNau
+author: andrewYerNau, TheArmagan
 commands:
   librebuild:
     aliases: [lb]

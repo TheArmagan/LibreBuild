@@ -78,14 +78,14 @@ public class StructurePlacementListener implements Listener {
             int x2 = x1 + width - 1;
             int y2 = y1 + height - 1;
             int z2 = z1 + depth - 1;
-            particles.showPreview(player,loc, width, height, depth);
+            particles.showPreviewFromCenter(player, loc, width, height, depth);
 
             if (guardHandler.isProtectedRegion(player, x1, y1, z1, x2, y2, z2)) {
                 player.sendMessage(LibreBuildMessages.getInstance().getMessage("placement.error.restricted"));
                 return;
             }
 
-            particles.showPreview(player,loc, width, height, depth);
+            particles.showPreviewFromCenter(player, loc, width, height, depth);
 
             long currentTime = System.currentTimeMillis();
 

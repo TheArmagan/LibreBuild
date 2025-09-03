@@ -7,7 +7,7 @@
 
     <groupId>net.ezplace</groupId>
     <artifactId>LibreBuild</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
 
     <name>LibreBuild</name>
@@ -67,7 +67,7 @@
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
-            <artifactId>worldedit-core</artifactId>
+            <artifactId>worldedit-bukkit</artifactId>
             <version>7.3.9</version>
             <scope>provided</scope>
         </dependency>

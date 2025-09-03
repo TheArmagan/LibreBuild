@@ -22,6 +22,14 @@ public class Particles {
         this.plugin = plugin;
     }
 
+    public void showPreviewFromCenter(Player player, Location center, int width, int height, int depth) {
+        int x1 = center.getBlockX() - width / 2;
+        int y1 = center.getBlockY();
+        int z1 = center.getBlockZ() - depth / 2;
+        Location loc = new Location(center.getWorld(), x1, y1, z1);
+        showPreview(player, loc, width, height, depth);
+    }
+
     public void showPreview(Player player, Location loc, int width, int height, int depth) {
         World world = loc.getWorld();
         if (world == null) return;
