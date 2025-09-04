@@ -1,13 +1,6 @@
 package net.ezplace.librebuild.listeners;
 
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +28,6 @@ public class StructurePlacementListener implements Listener {
     private final Map<Player, Location> pendingPlacements = new HashMap<>();
     private final Map<Player, Long> clickTimes = new HashMap<>();
 
-
     public StructurePlacementListener(Plugin plugin, GuardHandler guardHandler) {
         this.plugin = plugin;
         this.itemHandler = new ItemHandler(plugin);
@@ -56,64 +48,55 @@ public class StructurePlacementListener implements Listener {
 
         Location loc = player.getLocation();
 
-        File schematicFile = new File(FileSchem.SCHEMATIC_FOLDER,  schematicName + ".schem");
+        File schematicFile = new File(FileSchem.SCHEMATIC_FOLDER, schematicName + ".schem");
 
-        try {
-            ClipboardFormat format = ClipboardFormats.findByFile(schematicFile);
-            if (format == null) {
-                player.sendMessage("§cFormato de schematic no válido.");
-                return;
-            }
+        if (!schematicFile.exists()) {
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.notfound"));
+            return;
+        }
 
-            ClipboardReader reader = format.getReader(new FileInputStream(schematicFile));
-            Clipboard clipboard = reader.read();
+        // SchemReader'dan doğru preview bilgilerini al
+        SchemReader.PreviewInfo previewInfo = SchemReader.getPreviewInfo(player, schematicFile, loc);
+        if (previewInfo == null) {
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.load"));
+            return;
+        }
 
-            int width = clipboard.getDimensions().x();
-            int height = clipboard.getDimensions().y();
-            int depth = clipboard.getDimensions().z();
+        // Preview partikülleri göster
+        particles.showPreview(player, new Location(loc.getWorld(), previewInfo.x1, previewInfo.y1, previewInfo.z1),
+                              previewInfo.width, previewInfo.height, previewInfo.depth);
 
-            int x1 = loc.getBlockX();
-            int y1 = loc.getBlockY();
-            int z1 = loc.getBlockZ();
-            int x2 = x1 + width - 1;
-            int y2 = y1 + height - 1;
-            int z2 = z1 + depth - 1;
-            particles.showPreviewFromCenter(player, loc, width, height, depth);
+        // Korumalı bölge kontrolü
+        if (guardHandler.isProtectedRegion(player, previewInfo.x1, previewInfo.y1, previewInfo.z1,
+                                           previewInfo.x2, previewInfo.y2, previewInfo.z2)) {
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("placement.error.restricted"));
+            return;
+        }
 
-            if (guardHandler.isProtectedRegion(player, x1, y1, z1, x2, y2, z2)) {
-                player.sendMessage(LibreBuildMessages.getInstance().getMessage("placement.error.restricted"));
-                return;
-            }
+        long currentTime = System.currentTimeMillis();
 
-            particles.showPreviewFromCenter(player, loc, width, height, depth);
+        if (pendingPlacements.containsKey(player)) {
+            long lastClickTime = clickTimes.getOrDefault(player, 0L);
 
-            long currentTime = System.currentTimeMillis();
-
-            if (pendingPlacements.containsKey(player)) {
-                long lastClickTime = clickTimes.getOrDefault(player, 0L);
-
-                // 5 seconds timeout
-                if (currentTime - lastClickTime <= 5000) {
-                    placeSchematic(player, loc, schematicName, width, height, depth);
-                    player.getInventory().getItemInMainHand().setAmount(0);
-                    pendingPlacements.remove(player);
-                    clickTimes.remove(player);
-                } else {
-                    player.sendMessage(LibreBuildMessages.getInstance().getMessage("placement.preview"));
-                    clickTimes.put(player, currentTime);
-                }
+            // 5 seconds timeout
+            if (currentTime - lastClickTime <= 5000) {
+                // Preview ile aynı pozisyonu kullan - player pozisyonu paste origin'ı olsun
+                placeSchematic(player, loc, schematicName);
+                player.getInventory().getItemInMainHand().setAmount(0);
+                pendingPlacements.remove(player);
+                clickTimes.remove(player);
             } else {
                 player.sendMessage(LibreBuildMessages.getInstance().getMessage("placement.preview"));
-                pendingPlacements.put(player, loc);
                 clickTimes.put(player, currentTime);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.error.load"));
+        } else {
+            player.sendMessage(LibreBuildMessages.getInstance().getMessage("placement.preview"));
+            pendingPlacements.put(player, new Location(loc.getWorld(), previewInfo.x1, previewInfo.y1, previewInfo.z1));
+            clickTimes.put(player, currentTime);
         }
     }
 
-    private void placeSchematic(Player player, Location loc, String schematicName, int width, int height, int depth) {
+    private void placeSchematic(Player player, Location loc, String schematicName) {
         File file = new File(FileSchem.SCHEMATIC_FOLDER + "/" + schematicName + ".schem");
         player.sendMessage(LibreBuildMessages.getInstance().getMessage("schem.placing"));
         SchemReader.pasteSchematic(player, file, loc);

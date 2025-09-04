@@ -94,7 +94,7 @@ public class Particles {
     }
 
     private void drawLine(World world, Location start, Location end) {
-        int points = 30;
+        int points = 60;
         double dx = (end.getX() - start.getX()) / points;
         double dy = (end.getY() - start.getY()) / points;
         double dz = (end.getZ() - start.getZ()) / points;
